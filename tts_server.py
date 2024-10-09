@@ -1275,7 +1275,7 @@ async def upload_voice(file: UploadFile = File(...)):
         with open(ruta, "wb") as f:
             f.write(await file.read())
         
-        return JSONResponse(content={"filename": file.filename, "message": "File uploaded successfully."})
+        return JSONResponse(content={"filename": ruta, "message": "File uploaded successfully."})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

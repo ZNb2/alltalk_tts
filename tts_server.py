@@ -1261,6 +1261,39 @@ rendered_html = template.render(params=params)
 async def ready():
     return Response("Ready endpoint")
 
+
+############################
+#### Clonar voces ##########
+############################
+import uuid
+import os
+
+@app.post("/upload_voice_alltalk")
+async def upload_voice(file: UploadFile = File(...)):
+    try:
+        ruta = os.path.join("voices", f'{uuid.uuid4()}.wav')
+        with open(ruta, "wb") as f:
+            f.write(await file.read())
+        
+        return JSONResponse(content={"filename": file.filename, "message": "File uploaded successfully."})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/delete_file_alltalk")
+async def delete_file(file_path: str):
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return JSONResponse(content={"message": "File deleted successfully."})
+        else:
+            raise HTTPException(status_code=404, detail="File not found.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
 ############################
 #### External API ready ####
 ############################

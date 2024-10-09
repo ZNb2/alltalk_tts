@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import torch
 import torchaudio
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Depends
 from TTS.tts.configs.xtts_config import XttsConfig
 from TTS.tts.models.xtts import Xtts
 import io

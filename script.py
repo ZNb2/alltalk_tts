@@ -210,7 +210,7 @@ else:
 def check_required_files():
     this_dir = Path(__file__).parent.resolve()
     download_script_path = this_dir / "modeldownload.py"
-    subprocess.run(["python", str(download_script_path)])
+    subprocess.run(["python3", str(download_script_path)])
 
 # STARTUP Call Check routine
 check_required_files()
@@ -308,7 +308,7 @@ if os.path.isfile("/.dockerenv"):
     )
 else:
     # Start the subprocess
-    process = subprocess.Popen(["python", script_path])
+    process = subprocess.Popen(["python3", script_path])
     # Check if the subprocess has started successfully
     if process.poll() is None:
         print(f"[{params['branding']}Startup] \033[92mTTS Subprocess         :\033[93m Starting up\033[0m")

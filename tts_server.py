@@ -1278,7 +1278,7 @@ def get_file(url_wav):
 @app.post("/upload_voice_alltalk")
 async def upload_voice(url_wav: str):
     try:        
-        ruta = get_file(url_wav)
+        ruta = send_voice(url_wav)
         return JSONResponse(content={"filename": ruta, "message": "File uploaded successfully."})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

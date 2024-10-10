@@ -1269,13 +1269,16 @@ async def ready():
 import uuid
 import os
 
+def get_file(url_wav):
+    filename = url_wav.split("/")[-1]
+    output_path = os.path.join("voices", f'{uuid.uuid4()}.wav')
+    subprocess.run(["wget", url, "-O", output_path], check=True)
+    return output_path
+
 @app.post("/upload_voice_alltalk")
-async def upload_voice(file: UploadFile = File(...)):
-    try:
-        ruta = os.path.join("voices", f'{uuid.uuid4()}.wav')
-        with open(ruta, "wb") as f:
-            f.write(await file.read())
-        
+async def upload_voice(url_wav: str):
+    try:        
+        ruta = get_file(url_wav)
         return JSONResponse(content={"filename": ruta, "message": "File uploaded successfully."})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

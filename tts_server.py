@@ -1269,23 +1269,33 @@ async def ready():
 import uuid
 import os
 
-def get_file(url_wav):
-    filename = url_wav.split("/")[-1]
-    output_path = os.path.join("voices", f'{uuid.uuid4()}.wav')
-    subprocess.run(["wget", url, "-O", output_path], check=True)
-    return output_path
-
 @app.post("/upload_voice_alltalk")
-async def upload_voice(url_wav: str):
-    try:        
-        ruta = get_file(url_wav)
-        return JSONResponse(content={"filename": ruta, "message": "File uploaded successfully."})
+async def upload_voice(file: UploadFile = File(...)):
+ 
+    file_path = f"voices/{uuid.uuid4()}.wav"
+    data = await file.read()
+    with open(file_path, "wb") as buffer:
+        buffer.write(data)
+
+    return {"ruta":file_path}
+    
+def get_file(url):
+    file_path = f"voices/{uuid.uuid4()}.wav"
+    subprocess.run(["wget", url, "-O", file_path], check=True)
+    return file_path
+
+@app.post("/upload_voice_alltalk2")
+def upload_voice(wav: str):
+    try:
+        filename = get_file(wav)
+
+        return JSONResponse(content={"filename": filename, "message": "File uploaded successfully."})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @app.delete("/delete_file_alltalk")
-async def delete_file(file_path: str):
+async def delete_file(file: str, folder:str):
+    file_path = os.path.join(folder, file)
     try:
         if os.path.exists(file_path):
             os.remove(file_path)

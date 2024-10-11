@@ -1272,39 +1272,23 @@ import os
 @app.post("/upload_voice_alltalk")
 async def upload_voice(file: UploadFile = File(...)):
  
-    file_path = f"voices/{uuid.uuid4()}.wav"
+    ruta = f"{uuid.uuid4()}.wav"
+    file_path = f"voices/{ruta}"
     data = await file.read()
     with open(file_path, "wb") as buffer:
         buffer.write(data)
 
-    return {"ruta":file_path}
+    return {"ruta":ruta}
     
-def get_file(url):
-    file_path = f"voices/{uuid.uuid4()}.wav"
-    subprocess.run(["wget", url, "-O", file_path], check=True)
-    return file_path
-
-@app.post("/upload_voice_alltalk2")
-def upload_voice(wav: str):
-    try:
-        filename = get_file(wav)
-
-        return JSONResponse(content={"filename": filename, "message": "File uploaded successfully."})
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/delete_file_alltalk")
-async def delete_file(file: str, folder:str):
-    file_path = os.path.join(folder, file)
+async def delete_file(file_path: str):
     try:
-        if os.path.exists(file_path):
-            os.remove(file_path)
-            return JSONResponse(content={"message": "File deleted successfully."})
-        else:
-            raise HTTPException(status_code=404, detail="File not found.")
+        os.remove(file_path)
+        return JSONResponse(content={"message": "File deleted successfully."})
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 
 
